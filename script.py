@@ -1,5 +1,6 @@
-from Bio import Entrez
+from Bio import Entrez,GenBank,SeqIO
 import sys, argparse
+import json
 
 def main(argv):
     parser = argparse.ArgumentParser(description='Set email and max amount of results')
@@ -12,17 +13,23 @@ def main(argv):
     record = Entrez.read(handle)
     handle.close()
 
-    def wrireResult(recordId):
+    def writeSeqAndFeatures(recordId):
         handle = Entrez.efetch(db="Nucleotide", id=recordId, rettype="gb", retmode="text")
-        out_handle = open("record_{}".format(recordId), "w")
-        for line in handle:
-            out_handle.write(line)
-        out_handle.close()
+        record = SeqIO.read(handle, "genbank")
+        with open("sequence_{}.txt".format(recordId),"w") as out_seq:
+            for line in record.seq:
+                out_seq.write(line)
+        gb_features = record.features
+        feats = [feat for feat in gb_features if feat.type == "CDS"]
+        with open("features_{}.txt".format(recordId),"w") as out_handle:
+            for feat in feats:
+                seq_string = 'type:' + str(feat.type) + '\n' + 'location:' + str(feat.location) + '\n'
+                qual_string = "\n".join(["{}:{}".format(k, v) for k, v in feat.qualifiers.items()])
+                out_handle.write(seq_string + qual_string)
         handle.close()
 
     for r in record['IdList']:
-        wrireResult(r)
+        writeSeqAndFeatures(r)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
- 
