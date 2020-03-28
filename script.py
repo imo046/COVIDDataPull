@@ -1,6 +1,5 @@
-from Bio import Entrez,GenBank,SeqIO
+from Bio import Entrez,SeqIO
 import sys, argparse
-import json
 
 def main(argv):
     parser = argparse.ArgumentParser(description='Set email and max amount of results')
