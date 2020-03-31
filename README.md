@@ -11,5 +11,5 @@ script.py -e "email" -r "retmax"
 
 Email is the email address of the E-utility user, it is optional, however, it is recommended to use a valid email.
 
-Retmax parameter sets the maximum amount of entries to be processed, if not set, all the entries found 
+Retmax parameter sets the maximum amount of entries to be processed, if not set, the first 20 entries found 
 based on the filtering would be processed.
